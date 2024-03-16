@@ -1,0 +1,17 @@
+{
+  "name": "@repo/spotify",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "eslint": "^8.57.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

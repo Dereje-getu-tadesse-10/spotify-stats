@@ -8,7 +8,6 @@
     "db:migrate:dev": "prisma migrate dev",
     "format": "prisma format",
     "generate": "prisma generate",
-    "lint": "eslint . --max-warnings 0",
     "prebuild": "npm run generate",
     "studio": "prisma studio",
     "build": "npm run db:migrate:dev"
