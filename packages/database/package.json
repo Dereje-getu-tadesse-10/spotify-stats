@@ -6,7 +6,6 @@
   },
   "scripts": {
     "db:migrate:dev": "prisma migrate dev",
-    "dev": "tsup --watch",
     "format": "prisma format",
     "generate": "prisma generate",
     "lint": "eslint . --max-warnings 0",
