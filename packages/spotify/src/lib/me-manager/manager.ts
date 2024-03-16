@@ -1,9 +1,9 @@
 import {
   SpotifyProfile,
-  FormattedPlaylistItem,
   SpotifyPlaylistsResponse,
   SpotifyPlaylistsApiResponse,
 } from "@repo/types";
+
 export class MeManager {
   private baseUrl: string;
   private accessToken: string;

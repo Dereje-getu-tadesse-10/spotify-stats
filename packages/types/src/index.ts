@@ -17,7 +17,7 @@ export interface SpotifyImage {
   height: number;
 }
 
-export interface FormattedPlaylistItem {
+interface FormattedPlaylistItem {
   id: string;
   name: string;
   description: string;
