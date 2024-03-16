@@ -7,6 +7,9 @@
     "build": "tsc",
     "lint": "eslint src"
   },
+  "dependencies": {
+    "@repo/types": "*"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "eslint": "^8.57.0"
