@@ -1,4 +1,4 @@
-import { NextAuthConfig } from "next-auth";
+import type { NextAuthConfig } from "next-auth";
 import Spotify from "next-auth/providers/spotify";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@repo/database";
@@ -16,15 +16,18 @@ const scopes = [
   "playlist-read-private",
 ].join(",");
 
+const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env;
+
 const config = {
   adapter: PrismaAdapter(prisma),
   providers: [
     Spotify({
-      clientId: process.env.SPOTIFY_CLIENT_ID,
-      clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
+      clientId: SPOTIFY_CLIENT_ID,
+      clientSecret: SPOTIFY_CLIENT_SECRET,
       authorization: `https://accounts.spotify.com/authorize?scope=${scopes}`,
     }),
   ],
+  trustHost: true,
   callbacks: {
     async session({ session, user }) {
       try {
@@ -36,17 +39,28 @@ const config = {
         if (!userAccount) throw new Error("User account not found");
 
         const account = userAccount.accounts[0];
+
         const now = Math.floor(Date.now() / 1000);
-        const expiresIn = (account.expires_at! - now) / 60;
+
+        if (
+          account.expires_at === null ||
+          userAccount.accounts[0].expires_at === null
+        ) {
+          throw new Error("account.expires_at is undefined");
+        }
+        const expiresIn = (account.expires_at - now) / 60;
         const difference = Math.floor(
-          (userAccount.accounts[0].expires_at! - now) / 60
+          (userAccount.accounts[0].expires_at - now) / 60
         );
 
         console.log(`Token still active for ${difference} minutes.`);
         if (expiresIn <= 10) {
           console.log("Token expired, fetching new one...");
-          const { accessToken, expiresIn, refreshToken } =
-            await refreshAccessToken(account.refresh_token!);
+          if (!account.refresh_token) {
+            throw new Error("account.refresh_token is undefined");
+          }
+          const { accessToken, tokenExpiresIn, refreshToken } =
+            await refreshAccessToken(account.refresh_token);
 
           await prisma.account.update({
             where: {
@@ -57,7 +71,7 @@ const config = {
             },
             data: {
               access_token: accessToken,
-              expires_at: Math.floor(Date.now() / 1000 + expiresIn),
+              expires_at: Math.floor(Date.now() / 1000 + tokenExpiresIn),
               refresh_token: refreshToken,
             },
           });

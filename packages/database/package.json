@@ -10,7 +10,8 @@
     "generate": "prisma generate",
     "lint": "eslint . --max-warnings 0",
     "prebuild": "npm run generate",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "build": "npm run db:migrate:dev"
   },
   "dependencies": {
     "@prisma/client": "^5.11.0"

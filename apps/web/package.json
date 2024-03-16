@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@repo/ui": "*",
+    "@repo/database": "*",
     "next": "^14.1.1",
     "next-auth": "beta",
     "react": "^18.2.0",
