@@ -5,4 +5,13 @@ module.exports = {
   parserOptions: {
     project: true,
   },
+  rules: {
+    "no-var": "off",
+    "@typescript-eslint/ban-ts-comment": [
+      "error",
+      {
+        "ts-ignore": "allow-with-description",
+      },
+    ],
+  },
 };

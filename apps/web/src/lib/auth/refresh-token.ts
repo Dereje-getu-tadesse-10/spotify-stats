@@ -26,9 +26,9 @@ async function refreshAccessToken(
   });
 
   if (!request.ok) {
-    console.error(
-      `Failed to refresh token: ${request.status} ${request.statusText}`
-    );
+    // console.error(
+    //   `Failed to refresh token: ${request.status} ${request.statusText}`
+    // );
     throw new Error(
       `Failed to refresh token: ${request.status} ${request.statusText}`
     );

@@ -49,13 +49,13 @@ const config = {
           throw new Error("account.expires_at is undefined");
         }
         const expiresIn = (account.expires_at - now) / 60;
-        const difference = Math.floor(
-          (userAccount.accounts[0].expires_at - now) / 60
-        );
+        // const difference = Math.floor(
+        //   (userAccount.accounts[0].expires_at - now) / 60
+        // );
 
-        console.log(`Token still active for ${difference} minutes.`);
+        // console.log(`Token still active for ${difference} minutes.`);
         if (expiresIn <= 10) {
-          console.log("Token expired, fetching new one...");
+          // console.log("Token expired, fetching new one...");
           if (!account.refresh_token) {
             throw new Error("account.refresh_token is undefined");
           }
@@ -83,7 +83,7 @@ const config = {
           return session;
         }
       } catch (error) {
-        console.error(`Failed to refresh session: ${error}`);
+        // console.error(`Failed to refresh session: ${error}`);
         return session;
       }
     },
