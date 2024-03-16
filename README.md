@@ -11,4 +11,3 @@ Add methods to get user info:
 - [ ] Get tracks user played recently
 - [ ] Get user's playlists
 - [ ] Make a playlist and add songs
-# spotify-stats
