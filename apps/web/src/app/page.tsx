@@ -1,10 +1,10 @@
 import { auth } from "../lib/auth/auth";
-import { SpotifyClient } from "@repo/spotify";
+import { Spotify } from "@repo/spotify";
 export default async function Page() {
   const session = await auth();
   if (!session) return null;
 
-  const client = new SpotifyClient(session.access_token as string);
+  const client = new Spotify(session.access_token as string);
 
   const user = await client.me.getPlaylists();
   console.log(user);

@@ -1,6 +1,6 @@
 import { MeManager } from "./me-manager/manager";
 
-export class SpotifyClient {
+export class Spotify {
   private baseUrl: string = "https://api.spotify.com/v1";
   private accessToken: string;
 
