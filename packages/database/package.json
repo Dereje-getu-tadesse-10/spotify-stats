@@ -1,5 +1,5 @@
 {
-  "name": "@repo/database",
+  "name": "@statify/database",
   "version": "1.0.0",
   "exports": {
     ".": "./src/client.ts"
@@ -16,8 +16,8 @@
     "@prisma/client": "^5.11.0"
   },
   "devDependencies": {
-    "@repo/eslint-config": "*",
-    "@repo/typescript-config": "*",
+    "@statify/eslint-config": "workspace:*",
+    "@statify/typescript-config": "workspace:*",
     "eslint": "^8.57.0",
     "prisma": "^5.11.0",
     "rimraf": "^5.0.5",

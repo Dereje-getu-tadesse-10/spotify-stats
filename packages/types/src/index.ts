@@ -75,3 +75,31 @@ export interface SpotifyTopTrack {
   offset: number;
   previous: string | null;
 }
+
+export interface SpotifyRecentlyPlayed {
+  items: {
+    track: {
+      name: string;
+      artists: {
+        name: string;
+        external_urls: {
+          spotify: string;
+        };
+      }[];
+      album: {
+        name: string;
+        images: SpotifyImage[] | null;
+      };
+      duration_ms: string;
+      popularity: number;
+      preview_url: string | null;
+    };
+    played_at: string;
+  }[];
+  next: string | null;
+  cursor: {
+    after: string | null;
+    before: string | null;
+  };
+  limit: number;
+}

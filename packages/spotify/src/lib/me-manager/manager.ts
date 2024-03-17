@@ -1,9 +1,12 @@
-import {
+import type {
   SpotifyProfile,
   SpotifyPlaylist,
   SpotifyTopArtist,
   SpotifyTopTrack,
+  SpotifyRecentlyPlayed,
 } from "@repo/types";
+import formatDuration from "../../utils/ms-to-minute";
+
 export class MeManager {
   private baseUrl;
   private accessToken;
@@ -13,10 +16,7 @@ export class MeManager {
     this.accessToken = accessToken;
   }
 
-  private async fetchFromSpotify(
-    endpoint: string,
-    options?: RequestInit
-  ): Promise<any> {
+  private async fetchFromSpotify(endpoint: string, options?: RequestInit) {
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
@@ -28,7 +28,9 @@ export class MeManager {
     const response = await fetch(`${this.baseUrl}${endpoint}`, fetchOptions);
 
     if (!response.ok) {
-      throw new Error(`${response.status} ${response.statusText}`);
+      throw new Error(
+        `${String(response.status)} ${String(response.statusText)}`
+      );
     }
 
     return response.json();
@@ -36,11 +38,11 @@ export class MeManager {
 
   async getProfile(): Promise<SpotifyProfile> {
     try {
-      const response = await this.fetchFromSpotify("/me", {
+      const response = (await this.fetchFromSpotify("/me", {
         cache: "force-cache",
-      });
+      })) as SpotifyProfile;
 
-      const formatedProfile: SpotifyProfile = {
+      const formatedProfile = {
         id: response.id,
         display_name: response.display_name,
         images: response.images ? response.images : null,
@@ -51,8 +53,8 @@ export class MeManager {
 
       return formatedProfile;
     } catch (error) {
-      console.error(`Failed to get profile from Spotify: ${error}`);
-      throw new Error(`Failed to get profile from Spotify: ${error}`);
+      console.error(`Failed to get profile from Spotify: ${String(error)}`);
+      throw new Error(`Failed to get profile from Spotify: ${String(error)}`);
     }
   }
 
@@ -83,8 +85,8 @@ export class MeManager {
         items: items,
       };
     } catch (error) {
-      console.error(`Failed to get playlists from Spotify: ${error}`);
-      throw new Error(`Failed to get playlists from Spotify: ${error}`);
+      console.error(`Failed to get playlists from Spotify: ${String(error)}`);
+      throw new Error(`Failed to get playlists from Spotify: ${String(error)}`);
     }
   }
 
@@ -118,8 +120,10 @@ export class MeManager {
         items: items,
       };
     } catch (error) {
-      console.error(`Failed to get top artists from Spotify: ${error}`);
-      throw new Error(`Failed to get top artists from Spotify: ${error}`);
+      console.error(`Failed to get top artists from Spotify: ${String(error)}`);
+      throw new Error(
+        `Failed to get top artists from Spotify: ${String(error)}`
+      );
     }
   }
 
@@ -156,8 +160,52 @@ export class MeManager {
         items: items,
       };
     } catch (error) {
-      console.error(`Failed to get top tracks from Spotify: ${error}`);
-      throw new Error(`Failed to get top tracks from Spotify: ${error}`);
+      console.error(`Failed to get top tracks from Spotify: ${String(error)}`);
+      throw new Error(
+        `Failed to get top tracks from Spotify: ${String(error)}`
+      );
+    }
+  }
+
+  async getRecentlyPlayed(): Promise<SpotifyRecentlyPlayed> {
+    try {
+      const response = (await this.fetchFromSpotify(
+        "/me/player/recently-played",
+        {
+          cache: "force-cache",
+        }
+      )) as SpotifyRecentlyPlayed;
+
+      const items = response.items.map((item) => {
+        const album = item.track.album;
+        const images = album.images ? album.images : null;
+        return {
+          track: {
+            name: item.track.name,
+            artists: item.track.artists,
+            album: {
+              name: album.name,
+              images: images,
+            },
+            duration_ms: formatDuration(Number(item.track.duration_ms)),
+            popularity: item.track.popularity,
+            preview_url: item.track.preview_url,
+          },
+          played_at: item.played_at,
+        };
+      });
+
+      return {
+        ...response,
+        items: items,
+      };
+    } catch (error) {
+      console.error(
+        `Failed to get recently played from Spotify: ${String(error)}`
+      );
+      throw new Error(
+        `Failed to get recently played from Spotify: ${String(error)}`
+      );
     }
   }
 }

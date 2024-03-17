@@ -1,5 +1,5 @@
 {
-  "name": "@repo/types",
+  "name": "@statify/types",
   "module": "index.ts",
   "exports": {
     ".": "./src/index.ts"

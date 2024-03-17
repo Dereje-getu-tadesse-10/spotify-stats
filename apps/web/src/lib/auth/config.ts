@@ -1,7 +1,7 @@
 import type { NextAuthConfig } from "next-auth";
 import Spotify from "next-auth/providers/spotify";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { prisma } from "@repo/database";
+import { prisma } from "@statify/database";
 import refreshAccessToken from "./refresh-token";
 
 const scopes = [

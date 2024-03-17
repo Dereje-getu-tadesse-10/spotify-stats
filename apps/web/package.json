@@ -10,9 +10,9 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@repo/ui": "*",
-    "@repo/database": "*",
-    "@repo/spotify": "*",
+    "@statify/ui": "workspace:*",
+    "@statify/database": "workspace:*",
+    "@statify/spotify": "workspace:*",
     "next": "^14.1.1",
     "next-auth": "beta",
     "react": "^18.2.0",
@@ -21,9 +21,9 @@
   "devDependencies": {
     "@auth/prisma-adapter": "^1.5.0",
     "@next/eslint-plugin-next": "^14.1.1",
-    "@repo/eslint-config": "*",
-    "@repo/tailwind-config": "*",
-    "@repo/typescript-config": "*",
+    "@statify/eslint-config": "workspace:*",
+    "@statify/tailwind-config": "workspace:*",
+    "@statify/typescript-config": "workspace:*",
     "@types/node": "^20.11.24",
     "@types/react": "^18.2.61",
     "@types/react-dom": "^18.2.19",

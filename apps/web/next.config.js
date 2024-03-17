@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
 module.exports = {
   reactStrictMode: true,
-  transpilePackages: ["@repo/ui"],
+  transpilePackages: ["@statify/ui"],
   logging: {
-    fetches: true,
+    fetches: {
+      fullUrl: true,
+    },
   },
 };

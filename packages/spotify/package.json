@@ -1,5 +1,5 @@
 {
-  "name": "@repo/spotify",
+  "name": "@statify/spotify",
   "exports": {
     ".": "./src/index.ts"
   },
@@ -8,7 +8,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@repo/types": "*"
+    "@statify/types": "workspace:*"
   },
   "devDependencies": {
     "@types/bun": "latest",
