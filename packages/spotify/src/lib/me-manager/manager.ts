@@ -95,11 +95,13 @@ export class MeManager {
 
   async topArtists(
     type: "artists",
-    timeRange: "short_term" | "medium_term" | "long_term"
+    timeRange: "short_term" | "medium_term" | "long_term" = "short_term",
+    limit: number = 20,
+    offset: number = 0
   ): Promise<SpotifyTopArtist> {
     try {
       const response = (await this.fetchFromSpotify(
-        `/me/top/${type}?time_range=${timeRange}`,
+        `/me/top/${type}?time_range=${timeRange}&limit=${limit}&offset=${offset}`,
         {
           cache: "force-cache",
         }
@@ -131,11 +133,13 @@ export class MeManager {
 
   async topTracks(
     type: "tracks",
-    timeRange: "short_term" | "medium_term" | "long_term"
+    timeRange: "short_term" | "medium_term" | "long_term",
+    limit: number = 20,
+    offset: number = 0
   ): Promise<SpotifyTopTrack> {
     try {
       const response = (await this.fetchFromSpotify(
-        `/me/top/${type}?time_range=${timeRange}`,
+        `/me/top/${type}?time_range=${timeRange}&limit=${limit}&offset=${offset}`,
         {
           cache: "force-cache",
         }
@@ -168,13 +172,19 @@ export class MeManager {
     }
   }
 
-  async recentlyPlayed(): Promise<SpotifyRecentlyPlayed> {
+  async recentlyPlayed(
+    before?: string,
+    after?: string
+  ): Promise<SpotifyRecentlyPlayed> {
     try {
+      let url = "/me/player/recently-played";
+      const params = new URLSearchParams();
+      if (before) params.append("before", before);
+      if (after) params.append("after", after);
+      if (params.toString()) url += `?${params.toString()}`;
+
       const response = (await this.fetchFromSpotify(
-        "/me/player/recently-played",
-        {
-          cache: "force-cache",
-        }
+        url
       )) as SpotifyRecentlyPlayed;
 
       const items = response.items.map((item) => {
