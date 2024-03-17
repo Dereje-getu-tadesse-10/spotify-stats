@@ -7,32 +7,44 @@ import {
 export class MeManager {
   private baseUrl;
   private accessToken;
-  private timeRange = "long_term";
 
-  constructor(baseUrl: string, accessToken: string, timeRange?: string) {
+  constructor(baseUrl: string, accessToken: string) {
     this.baseUrl = baseUrl;
     this.accessToken = accessToken;
-    if (timeRange) {
-      this.timeRange = timeRange;
-    }
   }
 
-  async getProfile(): Promise<SpotifyProfile> {
-    const response = await fetch(`${this.baseUrl}/me`, {
+  private async fetchFromSpotify(
+    endpoint: string,
+    options?: RequestInit
+  ): Promise<any> {
+    const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
         "Content-Type": "application/json",
       },
+      ...options,
+    };
+
+    const response = await fetch(`${this.baseUrl}${endpoint}`, fetchOptions);
+
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  }
+
+  async getProfile(): Promise<SpotifyProfile> {
+    const response = await this.fetchFromSpotify("/me", {
+      cache: "force-cache",
     });
 
-    const profile = (await response.json()) as SpotifyProfile;
-
     const formatedProfile: SpotifyProfile = {
-      id: profile.id,
-      display_name: profile.display_name,
-      images: profile.images ? profile.images : null,
+      id: response.id,
+      display_name: response.display_name,
+      images: response.images ? response.images : null,
       followers: {
-        total: profile.followers.total,
+        total: response.followers.total,
       },
     };
 
@@ -40,15 +52,11 @@ export class MeManager {
   }
 
   async getPlaylists(): Promise<SpotifyPlaylist> {
-    const response = await fetch(`${this.baseUrl}/me/playlists`, {
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-    const data = (await response.json()) as SpotifyPlaylist;
+    const response = (await this.fetchFromSpotify("/me/playlists", {
+      cache: "force-cache",
+    })) as SpotifyPlaylist;
 
-    const items = data.items.map((playlist) => {
+    const items = response.items.map((playlist) => {
       const images = playlist.images ? playlist.images : null;
       return {
         id: playlist.id,
@@ -65,7 +73,7 @@ export class MeManager {
     });
 
     return {
-      ...data,
+      ...response,
       items: items,
     };
   }
@@ -74,19 +82,14 @@ export class MeManager {
     type: "artists",
     timeRange: "short_term" | "medium_term" | "long_term"
   ): Promise<SpotifyTopArtist> {
-    const response = await fetch(
-      `${this.baseUrl}/me/top/${type}?time_range=${timeRange}`,
+    const response = (await this.fetchFromSpotify(
+      `/me/top/${type}?time_range=${timeRange}`,
       {
-        headers: {
-          Authorization: `Bearer ${this.accessToken}`,
-          "Content-Type": "application/json",
-        },
+        cache: "force-cache",
       }
-    );
+    )) as SpotifyTopArtist;
 
-    const data = (await response.json()) as SpotifyTopArtist;
-
-    const items = data.items.map((artist) => {
+    const items = response.items.map((artist) => {
       const images = artist.images ? artist.images : null;
       return {
         external_urls: {
@@ -100,7 +103,7 @@ export class MeManager {
     });
 
     return {
-      ...data,
+      ...response,
       items: items,
     };
   }
@@ -109,19 +112,14 @@ export class MeManager {
     type: "tracks",
     timeRange: "short_term" | "medium_term" | "long_term"
   ): Promise<SpotifyTopTrack> {
-    const response = await fetch(
-      `${this.baseUrl}/me/top/${type}?time_range=${timeRange}`,
+    const response = (await this.fetchFromSpotify(
+      `/me/top/${type}?time_range=${timeRange}`,
       {
-        headers: {
-          Authorization: `Bearer ${this.accessToken}`,
-          "Content-Type": "application/json",
-        },
+        cache: "force-cache",
       }
-    );
+    )) as SpotifyTopTrack;
 
-    const data = (await response.json()) as SpotifyTopTrack;
-
-    const items = data.items.map((track) => {
+    const items = response.items.map((track) => {
       const album = track.album;
       const images = album.images ? album.images : null;
       return {
@@ -138,7 +136,7 @@ export class MeManager {
     });
 
     return {
-      ...data,
+      ...response,
       items: items,
     };
   }

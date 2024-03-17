@@ -8,7 +8,7 @@ export default async function Page() {
 
   const client = new Spotify(session.access_token as string);
 
-  const user = await client.me.getTopTracks("tracks", "short_term");
+  const user = await client.me.getProfile();
 
   console.log(user);
 
