@@ -5,8 +5,8 @@
 Add methods to get user info:
 
 - [x] Get current user info
-- [ ] Get favorite tracks of user
-- [ ] Get favorite artists of user
+- [x] Get favorite tracks of user
+- [x] Get favorite artists of user
 - [ ] Get track user is playing now
 - [ ] Get tracks user played recently
 - [x] Get user's playlists
