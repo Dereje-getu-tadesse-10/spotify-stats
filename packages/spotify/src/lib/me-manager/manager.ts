@@ -1,9 +1,4 @@
-import {
-  SpotifyProfile,
-  SpotifyPlaylistsResponse,
-  SpotifyPlaylistsApiResponse,
-} from "@repo/types";
-
+import { SpotifyProfile, SpotifyPlaylist } from "@repo/types";
 export class MeManager {
   private baseUrl: string;
   private accessToken: string;
@@ -13,7 +8,7 @@ export class MeManager {
     this.accessToken = accessToken;
   }
 
-  async getProfile() {
+  async getProfile(): Promise<SpotifyProfile> {
     const response = await fetch(`${this.baseUrl}/me`, {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
@@ -21,12 +16,12 @@ export class MeManager {
       },
     });
 
-    const profile = await response.json();
+    const profile = (await response.json()) as SpotifyProfile;
 
     const formatedProfile: SpotifyProfile = {
       id: profile.id,
-      displayName: profile.display_name,
-      images: profile.images.length > 0 ? profile.images[1] : profile.images[0],
+      display_name: profile.display_name,
+      images: profile.images ? profile.images : null,
       followers: {
         total: profile.followers.total,
       },
@@ -35,18 +30,17 @@ export class MeManager {
     return formatedProfile;
   }
 
-  async getPlaylists(): Promise<SpotifyPlaylistsResponse> {
+  async getPlaylists(): Promise<SpotifyPlaylist["items"]> {
     const response = await fetch(`${this.baseUrl}/me/playlists`, {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
         "Content-Type": "application/json",
       },
     });
-    const data: SpotifyPlaylistsApiResponse = await response.json();
+    const data = (await response.json()) as SpotifyPlaylist;
 
     const items = data.items.map((playlist) => {
-      const image =
-        playlist.images && playlist.images[0] ? playlist.images[0] : null;
+      const images = playlist.images ? playlist.images : null;
       return {
         id: playlist.id,
         name: playlist.name,
@@ -54,16 +48,14 @@ export class MeManager {
         external_urls: {
           spotify: playlist.external_urls.spotify,
         },
-        images: image,
+        images: images,
         tracks: {
           total: playlist.tracks.total,
         },
       };
     });
 
-    return {
-      ...data,
-      items,
-    };
+    return items;
   }
 }
+

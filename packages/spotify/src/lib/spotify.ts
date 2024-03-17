@@ -1,10 +1,10 @@
 import { MeManager } from "./me-manager/manager";
 
 export class Spotify {
-  private baseUrl: string = "https://api.spotify.com/v1";
-  private accessToken: string;
+  private baseUrl = "https://api.spotify.com/v1";
+  private accessToken;
 
-  public me: MeManager;
+  public me;
 
   constructor(accessToken: string) {
     this.accessToken = accessToken;
