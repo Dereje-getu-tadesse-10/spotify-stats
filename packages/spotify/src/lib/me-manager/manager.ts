@@ -1,7 +1,7 @@
 import { SpotifyProfile, SpotifyPlaylist } from "@repo/types";
 export class MeManager {
-  private baseUrl: string;
-  private accessToken: string;
+  private baseUrl;
+  private accessToken;
 
   constructor(baseUrl: string, accessToken: string) {
     this.baseUrl = baseUrl;
@@ -30,7 +30,7 @@ export class MeManager {
     return formatedProfile;
   }
 
-  async getPlaylists(): Promise<SpotifyPlaylist["items"]> {
+  async getPlaylists(): Promise<SpotifyPlaylist> {
     const response = await fetch(`${this.baseUrl}/me/playlists`, {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
@@ -55,7 +55,9 @@ export class MeManager {
       };
     });
 
-    return items;
+    return {
+      ...data,
+      items: items,
+    };
   }
 }
-
