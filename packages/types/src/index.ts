@@ -36,3 +36,42 @@ export interface SpotifyPlaylist {
   previous: string | null;
   total: number;
 }
+
+export interface SpotifyTopArtist {
+  items: {
+    external_urls: {
+      spotify: string;
+    };
+    genres: string[];
+    images: SpotifyImage[] | null;
+    name: string;
+    popularity: number;
+  }[];
+  total: number;
+  next: string | null;
+  offset: number;
+  previous: string | null;
+}
+
+export interface SpotifyTopTrack {
+  items: {
+    name: string;
+    artists: {
+      name: string;
+      external_urls: {
+        spotify: string;
+      };
+    }[];
+    album: {
+      name: string;
+      images: SpotifyImage[] | null;
+    };
+    duration_ms: number;
+    popularity: number;
+    preview_url: string | null;
+  }[];
+  total: number;
+  next: string | null;
+  offset: number;
+  previous: string | null;
+}
