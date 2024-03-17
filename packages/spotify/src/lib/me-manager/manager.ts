@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 import type {
   SpotifyProfile,
   SpotifyPlaylist,
@@ -8,8 +6,8 @@ import type {
   SpotifyRecentlyPlayed,
   SpotifyCurrentlyPlaying,
 } from "@repo/types";
-
-import formatDuration from "../../utils/ms-to-minute";
+import dayjs from "dayjs";
+import { formatDuration } from "../../utils/ms-to-minute";
 
 export class MeManager {
   private baseUrl;
@@ -20,7 +18,10 @@ export class MeManager {
     this.accessToken = accessToken;
   }
 
-  private async fetchFromSpotify(endpoint: string, options?: RequestInit) {
+  private async fetchFromSpotify(
+    endpoint: string,
+    options?: RequestInit
+  ): Promise<unknown> {
     const fetchOptions: RequestInit = {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
@@ -40,7 +41,7 @@ export class MeManager {
     return response.json();
   }
 
-  async getProfile(): Promise<SpotifyProfile> {
+  async profile(): Promise<SpotifyProfile> {
     try {
       const response = (await this.fetchFromSpotify("/me", {
         cache: "force-cache",
@@ -57,12 +58,11 @@ export class MeManager {
 
       return formatedProfile;
     } catch (error) {
-      console.error(`Failed to get profile from Spotify: ${String(error)}`);
       throw new Error(`Failed to get profile from Spotify: ${String(error)}`);
     }
   }
 
-  async getPlaylists(): Promise<SpotifyPlaylist> {
+  async playlists(): Promise<SpotifyPlaylist> {
     try {
       const response = (await this.fetchFromSpotify("/me/playlists", {
         cache: "force-cache",
@@ -77,7 +77,7 @@ export class MeManager {
           external_urls: {
             spotify: playlist.external_urls.spotify,
           },
-          images: images,
+          images,
           tracks: {
             total: playlist.tracks.total,
           },
@@ -86,15 +86,14 @@ export class MeManager {
 
       return {
         ...response,
-        items: items,
+        items,
       };
     } catch (error) {
-      console.error(`Failed to get playlists from Spotify: ${String(error)}`);
       throw new Error(`Failed to get playlists from Spotify: ${String(error)}`);
     }
   }
 
-  async getTopArtists(
+  async topArtists(
     type: "artists",
     timeRange: "short_term" | "medium_term" | "long_term"
   ): Promise<SpotifyTopArtist> {
@@ -113,7 +112,7 @@ export class MeManager {
             spotify: artist.external_urls.spotify,
           },
           genres: artist.genres,
-          images: images,
+          images,
           name: artist.name,
           popularity: artist.popularity,
         };
@@ -121,17 +120,16 @@ export class MeManager {
 
       return {
         ...response,
-        items: items,
+        items,
       };
     } catch (error) {
-      console.error(`Failed to get top artists from Spotify: ${String(error)}`);
       throw new Error(
         `Failed to get top artists from Spotify: ${String(error)}`
       );
     }
   }
 
-  async getTopTracks(
+  async topTracks(
     type: "tracks",
     timeRange: "short_term" | "medium_term" | "long_term"
   ): Promise<SpotifyTopTrack> {
@@ -151,7 +149,7 @@ export class MeManager {
           artists: track.artists,
           album: {
             name: album.name,
-            images: images,
+            images,
           },
           duration_ms: track.duration_ms,
           popularity: track.popularity,
@@ -161,17 +159,16 @@ export class MeManager {
 
       return {
         ...response,
-        items: items,
+        items,
       };
     } catch (error) {
-      console.error(`Failed to get top tracks from Spotify: ${String(error)}`);
       throw new Error(
         `Failed to get top tracks from Spotify: ${String(error)}`
       );
     }
   }
 
-  async getRecentlyPlayed(): Promise<SpotifyRecentlyPlayed> {
+  async recentlyPlayed(): Promise<SpotifyRecentlyPlayed> {
     try {
       const response = (await this.fetchFromSpotify(
         "/me/player/recently-played",
@@ -189,7 +186,7 @@ export class MeManager {
             artists: item.track.artists,
             album: {
               name: album.name,
-              images: images,
+              images,
             },
             duration_ms: formatDuration(Number(item.track.duration_ms)),
             popularity: item.track.popularity,
@@ -201,12 +198,9 @@ export class MeManager {
 
       return {
         ...response,
-        items: items,
+        items,
       };
     } catch (error) {
-      console.error(
-        `Failed to get recently played from Spotify: ${String(error)}`
-      );
       throw new Error(
         `Failed to get recently played from Spotify: ${String(error)}`
       );
@@ -234,10 +228,9 @@ export class MeManager {
 
       return item;
     } catch (error) {
-      console.error(
+      throw new Error(
         `Failed to get current playing from Spotify: ${String(error)}`
       );
-      return null;
     }
   }
 }
