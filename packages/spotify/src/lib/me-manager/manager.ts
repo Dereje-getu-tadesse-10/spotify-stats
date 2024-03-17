@@ -35,109 +35,129 @@ export class MeManager {
   }
 
   async getProfile(): Promise<SpotifyProfile> {
-    const response = await this.fetchFromSpotify("/me", {
-      cache: "force-cache",
-    });
+    try {
+      const response = await this.fetchFromSpotify("/me", {
+        cache: "force-cache",
+      });
 
-    const formatedProfile: SpotifyProfile = {
-      id: response.id,
-      display_name: response.display_name,
-      images: response.images ? response.images : null,
-      followers: {
-        total: response.followers.total,
-      },
-    };
+      const formatedProfile: SpotifyProfile = {
+        id: response.id,
+        display_name: response.display_name,
+        images: response.images ? response.images : null,
+        followers: {
+          total: response.followers.total,
+        },
+      };
 
-    return formatedProfile;
+      return formatedProfile;
+    } catch (error) {
+      console.error(`Failed to get profile from Spotify: ${error}`);
+      throw new Error(`Failed to get profile from Spotify: ${error}`);
+    }
   }
 
   async getPlaylists(): Promise<SpotifyPlaylist> {
-    const response = (await this.fetchFromSpotify("/me/playlists", {
-      cache: "force-cache",
-    })) as SpotifyPlaylist;
+    try {
+      const response = (await this.fetchFromSpotify("/me/playlists", {
+        cache: "force-cache",
+      })) as SpotifyPlaylist;
 
-    const items = response.items.map((playlist) => {
-      const images = playlist.images ? playlist.images : null;
+      const items = response.items.map((playlist) => {
+        const images = playlist.images ? playlist.images : null;
+        return {
+          id: playlist.id,
+          name: playlist.name,
+          description: playlist.description,
+          external_urls: {
+            spotify: playlist.external_urls.spotify,
+          },
+          images: images,
+          tracks: {
+            total: playlist.tracks.total,
+          },
+        };
+      });
+
       return {
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description,
-        external_urls: {
-          spotify: playlist.external_urls.spotify,
-        },
-        images: images,
-        tracks: {
-          total: playlist.tracks.total,
-        },
+        ...response,
+        items: items,
       };
-    });
-
-    return {
-      ...response,
-      items: items,
-    };
+    } catch (error) {
+      console.error(`Failed to get playlists from Spotify: ${error}`);
+      throw new Error(`Failed to get playlists from Spotify: ${error}`);
+    }
   }
 
   async getTopArtists(
     type: "artists",
     timeRange: "short_term" | "medium_term" | "long_term"
   ): Promise<SpotifyTopArtist> {
-    const response = (await this.fetchFromSpotify(
-      `/me/top/${type}?time_range=${timeRange}`,
-      {
-        cache: "force-cache",
-      }
-    )) as SpotifyTopArtist;
+    try {
+      const response = (await this.fetchFromSpotify(
+        `/me/top/${type}?time_range=${timeRange}`,
+        {
+          cache: "force-cache",
+        }
+      )) as SpotifyTopArtist;
 
-    const items = response.items.map((artist) => {
-      const images = artist.images ? artist.images : null;
+      const items = response.items.map((artist) => {
+        const images = artist.images ? artist.images : null;
+        return {
+          external_urls: {
+            spotify: artist.external_urls.spotify,
+          },
+          genres: artist.genres,
+          images: images,
+          name: artist.name,
+          popularity: artist.popularity,
+        };
+      });
+
       return {
-        external_urls: {
-          spotify: artist.external_urls.spotify,
-        },
-        genres: artist.genres,
-        images: images,
-        name: artist.name,
-        popularity: artist.popularity,
+        ...response,
+        items: items,
       };
-    });
-
-    return {
-      ...response,
-      items: items,
-    };
+    } catch (error) {
+      console.error(`Failed to get top artists from Spotify: ${error}`);
+      throw new Error(`Failed to get top artists from Spotify: ${error}`);
+    }
   }
 
   async getTopTracks(
     type: "tracks",
     timeRange: "short_term" | "medium_term" | "long_term"
   ): Promise<SpotifyTopTrack> {
-    const response = (await this.fetchFromSpotify(
-      `/me/top/${type}?time_range=${timeRange}`,
-      {
-        cache: "force-cache",
-      }
-    )) as SpotifyTopTrack;
+    try {
+      const response = (await this.fetchFromSpotify(
+        `/me/top/${type}?time_range=${timeRange}`,
+        {
+          cache: "force-cache",
+        }
+      )) as SpotifyTopTrack;
 
-    const items = response.items.map((track) => {
-      const album = track.album;
-      const images = album.images ? album.images : null;
+      const items = response.items.map((track) => {
+        const album = track.album;
+        const images = album.images ? album.images : null;
+        return {
+          name: track.name,
+          artists: track.artists,
+          album: {
+            name: album.name,
+            images: images,
+          },
+          duration_ms: track.duration_ms,
+          popularity: track.popularity,
+          preview_url: track.preview_url,
+        };
+      });
+
       return {
-        name: track.name,
-        artists: track.artists,
-        album: {
-          name: album.name,
-          images: images,
-        },
-        duration_ms: track.duration_ms,
-        popularity: track.popularity,
-        preview_url: track.preview_url,
+        ...response,
+        items: items,
       };
-    });
-
-    return {
-      ...response,
-      items: items,
-    };
+    } catch (error) {
+      console.error(`Failed to get top tracks from Spotify: ${error}`);
+      throw new Error(`Failed to get top tracks from Spotify: ${error}`);
+    }
   }
 }
