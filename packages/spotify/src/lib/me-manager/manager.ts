@@ -1,10 +1,14 @@
+import dayjs from "dayjs";
+
 import type {
   SpotifyProfile,
   SpotifyPlaylist,
   SpotifyTopArtist,
   SpotifyTopTrack,
   SpotifyRecentlyPlayed,
+  SpotifyCurrentlyPlaying,
 } from "@repo/types";
+
 import formatDuration from "../../utils/ms-to-minute";
 
 export class MeManager {
@@ -191,7 +195,7 @@ export class MeManager {
             popularity: item.track.popularity,
             preview_url: item.track.preview_url,
           },
-          played_at: item.played_at,
+          played_at: dayjs(item.played_at).format("YYYY-MM-DD"),
         };
       });
 
@@ -206,6 +210,34 @@ export class MeManager {
       throw new Error(
         `Failed to get recently played from Spotify: ${String(error)}`
       );
+    }
+  }
+
+  async currentPlaying(): Promise<SpotifyCurrentlyPlaying["item"] | null> {
+    try {
+      const response = (await this.fetchFromSpotify(
+        "/me/player/currently-playing"
+      )) as SpotifyCurrentlyPlaying;
+
+      const item = {
+        name: response.item.name,
+        artists: response.item.artists,
+        album: {
+          images: response.item.album.images,
+        },
+        external_urls: {
+          spotify: response.item.external_urls.spotify,
+        },
+        preview_url: response.item.preview_url,
+        popularity: response.item.popularity,
+      };
+
+      return item;
+    } catch (error) {
+      console.error(
+        `Failed to get current playing from Spotify: ${String(error)}`
+      );
+      return null;
     }
   }
 }

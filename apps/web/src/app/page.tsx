@@ -1,16 +1,16 @@
-// import { Session } from "next-auth";
-// import { auth } from "../lib/auth/auth";
-// import { Spotify } from "@statify/spotify";
+import { Session } from "next-auth";
+import { auth } from "../lib/auth/auth";
+import { Spotify } from "@statify/spotify";
 
 export default async function Page() {
-  // const session: Session | null = await auth();
-  // if (!session) return;
+  const session: Session | null = await auth();
+  if (!session) return;
 
-  // const client = new Spotify(session.access_token as string);
+  const client = new Spotify(session.access_token as string);
 
-  // const user = await client.me.getRecentlyPlayed();
+  const user = await client.me.currentPlaying();
 
-  // console.log(user);
+  console.log(user);
 
   return (
     <main className="flex flex-col items-center justify-between min-h-screen p-24 bg-red-500">

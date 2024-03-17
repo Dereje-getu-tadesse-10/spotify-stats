@@ -8,7 +8,8 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@statify/types": "workspace:*"
+    "@statify/types": "workspace:*",
+    "dayjs": "^1.11.10"
   },
   "devDependencies": {
     "@types/bun": "latest",
