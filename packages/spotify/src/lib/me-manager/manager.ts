@@ -18,6 +18,14 @@ export class MeManager {
     this.accessToken = accessToken;
   }
 
+  /**
+   * Fetch data from spotify api
+   * @param endpoint - Spotify endpoint to fetch
+   * @param options - Options to fetch
+   * @returns
+   * - data
+   * - error
+   */
   private async fetchFromSpotify(
     endpoint: string,
     options?: RequestInit
@@ -41,6 +49,14 @@ export class MeManager {
     return response.json();
   }
 
+  /**
+   * Get user's profile
+   * @returns
+   * - id
+   * - display_name
+   * - images
+   * - followers
+   */
   async profile(): Promise<SpotifyProfile> {
     try {
       const response = (await this.fetchFromSpotify("/me", {
@@ -62,6 +78,16 @@ export class MeManager {
     }
   }
 
+  /**
+   * Get user's playlists
+   * @returns
+   * - items: array of playlists
+   * - total: total number of items
+   * - limit: max number of items
+   * - offset: offset
+   * - next: next page
+   * - previous: previous page
+   */
   async playlists(): Promise<SpotifyPlaylist> {
     try {
       const response = (await this.fetchFromSpotify("/me/playlists", {
@@ -93,11 +119,25 @@ export class MeManager {
     }
   }
 
+  /**
+   *
+   * @param type - "tracks" | "artists"
+   * @param timeRange - "short_term" | "medium_term" | "long_term"
+   * @param limit - limit
+   * @param offset - offset
+   * @returns
+   *  - items: array of tracks
+   *  - total: total number of items
+   *  - limit: max number of items
+   *  - offset: offset
+   *  - next: next page
+   *  - previous: previous page
+   */
   async topArtists(
     type: "artists",
     timeRange: "short_term" | "medium_term" | "long_term" = "short_term",
-    limit: number = 20,
-    offset: number = 0
+    limit = 20,
+    offset = 0
   ): Promise<SpotifyTopArtist> {
     try {
       const response = (await this.fetchFromSpotify(
@@ -131,11 +171,24 @@ export class MeManager {
     }
   }
 
+  /**
+   * @param type - "tracks"
+   * @param timeRange - "short_term" | "medium_term" | "long_term"
+   * @param limit - limit
+   * @param offset - offset
+   * @returns
+   *  - items: array of tracks
+   *  - total: total number of items
+   *  - limit: max number of items
+   *  - offset: offset
+   *  - next: next page
+   *  - previous: previous page
+   */
   async topTracks(
     type: "tracks",
     timeRange: "short_term" | "medium_term" | "long_term",
-    limit: number = 20,
-    offset: number = 0
+    limit = 20,
+    offset = 0
   ): Promise<SpotifyTopTrack> {
     try {
       const response = (await this.fetchFromSpotify(
@@ -171,6 +224,19 @@ export class MeManager {
       );
     }
   }
+
+  /**
+   * User recently played songs
+   * @param before - in milliseconds
+   * @param after - in milliseconds
+   * @returns
+   *   - items: array of recently played songs
+   *   - total: total number of items
+   *   - limit: max number of items
+   *   - offset: offset
+   *   - next: next page
+   *   - previous: previous page
+   */
 
   async recentlyPlayed(
     before?: string,
@@ -217,10 +283,21 @@ export class MeManager {
     }
   }
 
+  /**
+   * User currently playing track
+   * @returns
+   *   - name
+   *   - artists
+   *   - album (track thumbnail)
+   *   - external_urls
+   *   - preview_url
+   *   - popularity
+   *   - is_playing
+   */
   async currentPlaying(): Promise<
     | SpotifyCurrentlyPlaying["item"]
     | {
-        is_playing: false;
+        is_playing: boolean;
       }
   > {
     try {

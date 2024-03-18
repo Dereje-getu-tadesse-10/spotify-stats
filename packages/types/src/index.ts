@@ -104,22 +104,22 @@ export interface SpotifyRecentlyPlayed {
   limit: number;
 }
 
-export interface SpotifyCurrentlyPlaying {
-  item: {
-    name: string;
-    artists: {
+  export interface SpotifyCurrentlyPlaying {
+    item: {
       name: string;
+      artists: {
+        name: string;
+        external_urls: {
+          spotify: string;
+        };
+      }[];
+      album: {
+        images: SpotifyImage[];
+      };
       external_urls: {
         spotify: string;
       };
-    }[];
-    album: {
-      images: SpotifyImage[];
+      preview_url: string | null;
+      popularity: number;
     };
-    external_urls: {
-      spotify: string;
-    };
-    preview_url: string | null;
-    popularity: number;
-  };
-}
+  }
