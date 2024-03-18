@@ -10,4 +10,7 @@ Add methods to get user info:
 - [x] Get track user is playing now
 - [x] Get tracks user played recently
 - [x] Get user's playlists
-- [ ] Make a playlist and add songs
+- [ ] Create playlist
+- [ ] Add tracks to playlist
+- [ ] Remove tracks from playlist
+- [ ] Improve Error handling when rate limiting occurs (429) or other errors
