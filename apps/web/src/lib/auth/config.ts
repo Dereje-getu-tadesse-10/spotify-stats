@@ -7,12 +7,12 @@ import refreshAccessToken from "./refresh-token";
 const scopes = [
   "user-read-email",
   "user-read-currently-playing",
-  "user-top-read",
   "user-read-recently-played",
   "user-read-private",
+  "user-top-read",
+  "user-library-read",
   "playlist-modify-public",
   "playlist-modify-private",
-  "playlist-read-collaborative",
   "playlist-read-private",
 ].join(",");
 
