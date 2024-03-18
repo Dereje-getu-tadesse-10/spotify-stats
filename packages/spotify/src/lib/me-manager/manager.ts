@@ -217,7 +217,12 @@ export class MeManager {
     }
   }
 
-  async currentPlaying(): Promise<SpotifyCurrentlyPlaying["item"] | null> {
+  async currentPlaying(): Promise<
+    | SpotifyCurrentlyPlaying["item"]
+    | {
+        is_playing: false;
+      }
+  > {
     try {
       const response = (await this.fetchFromSpotify(
         "/me/player/currently-playing"
@@ -238,9 +243,9 @@ export class MeManager {
 
       return item;
     } catch (error) {
-      throw new Error(
-        `Failed to get current playing from Spotify: ${String(error)}`
-      );
+      return {
+        is_playing: false,
+      };
     }
   }
 }
